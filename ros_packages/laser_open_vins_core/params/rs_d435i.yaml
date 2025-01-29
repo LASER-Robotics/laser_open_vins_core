@@ -1,0 +1,24 @@
+uav1/rgbd:
+  ros__parameters:
+    camera_namespace: 'uav1'
+    camera_name: 'rgbd'
+    initial_reset: true
+
+    depth_module:
+      infra_profile: 640x480x60
+      emitter_enabled: 2
+
+    enable_color: false
+    enable_depth: false
+
+    enable_infra1: true
+    enable_infra2: true
+
+    enable_gyro: true
+    gyro_fps: 400
+
+    enable_accel: true
+    accel_fps: 200
+
+    unite_imu_method: 2 # 0 - none, 1 - copy, 2 - linear interpolation
+

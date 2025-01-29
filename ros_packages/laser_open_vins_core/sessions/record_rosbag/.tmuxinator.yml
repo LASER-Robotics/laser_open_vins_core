@@ -1,0 +1,14 @@
+# do not modify these
+root: ./
+name: open_vins 
+socket_name: laser
+attach: false
+# you can modify these
+pre_window: export UAV_NAME=uav1
+startup_window: realsense
+windows:
+  - realsense:
+      layout: even-horizontal 
+      panes:
+        - ros2 launch laser_uav_openvins rs_d435i.launch.py
+        - 'history -s ros2 bag record /$UAV_NAME/rgbd/infra1/image_rect_raw/compressed /$UAV_NAME/rgbd/infra2/image_rect_raw/compressed /$UAV_NAME/rgbd/imu'

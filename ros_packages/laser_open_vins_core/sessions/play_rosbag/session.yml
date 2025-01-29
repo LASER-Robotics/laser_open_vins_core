@@ -1,0 +1,34 @@
+# do not modify these
+root: ./
+name: open_vins
+socket_name: laser
+attach: false
+# you can modify these
+pre_window: export UAV_NAME=uav1; export BAG_FILE=~/bag_files/rosbag2_2025_01_27-11_11_15/rosbag2_2025_01_27-11_11_15_0.db3
+startup_window: odometry
+windows:
+  - play_bag:
+      layout: tiled
+      panes:
+        - ros2 bag play -p -d 1 $BAG_FILE
+  - open_vins:
+      layout: tiled
+      panes:
+        - ros2 launch laser_open_vins_core open_vins_d435i.launch.py
+  - image_transport:
+      layout: tiled
+      panes:
+        - sleep 3; ros2 run image_transport republish compressed raw --ros-args --remap in/compressed:=/$UAV_NAME/rgbd/infra1/image_raw/compressed --remap out:=/$UAV_NAME/rgbd/infra1/image_raw
+        - sleep 3; ros2 run image_transport republish compressed raw --ros-args --remap in/compressed:=/$UAV_NAME/rgbd/infra2/image_raw/compressed --remap out:=/$UAV_NAME/rgbd/infra2/image_raw
+  - rviz:
+      layout: tiled
+      panes:
+        - sleep 3; rviz2 -d /tmp/default.rviz
+  - plotjuggler:
+      layout: tiled
+      panes:
+        - sleep 3; ros2 run plotjuggler plotjuggler -l /tmp/imu_layout.xml
+  - odometry:
+      layout: tiled
+      panes:
+        - sleep 3; ros2 topic echo --no-arr /$UAV_NAME/odomimu

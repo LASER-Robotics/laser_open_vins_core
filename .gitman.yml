@@ -1,0 +1,17 @@
+location: .gitman
+sources:
+  - repo: hhttps://github.com/LASER-Robotics/open_vins
+    name: open_vins
+    rev: master
+    type: git
+    params:
+    sparse_paths:
+      -
+    links:
+      - source: ''
+        target: ros_packages/open_vins
+    scripts:
+      - git submodule update --init --recursive
+default_group: ''
+groups:
+  -

@@ -1,0 +1,53 @@
+%YAML:1.0
+
+imu0:
+  T_i_b:
+    - [1.0, 0.0, 0.0, 0.0]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  
+  # Original parameters
+  # Accelerometer
+  # accelerometer_noise_density: 0.0010403885875028996
+  # accelerometer_random_walk: 2.5408935357771368e-05
+
+  # Gyroscope
+  # gyroscope_noise_density: 0.000166165380992944 
+  # gyroscope_random_walk: 2.08453652321153e-06 
+
+  # Inflated parameters (white x10, walks x20)
+  # Accelerometer
+  accelerometer_noise_density: 0.010403886
+  accelerometer_random_walk: 0.0005081787
+
+  # Gyroscope
+  gyroscope_noise_density: 0.0016616538
+  gyroscope_random_walk: 0.00004169073
+
+  model: kalibr
+  rostopic: /uav1/rgbd/imu
+  time_offset: 0.0
+  update_rate: 400.0
+
+  # Parameters from the Kalibr calibration
+  Tw: # imu0:gyroscope:M
+    - [0.9950436404588042, 0.0, 0.0]
+    - [0.0017675309086834109, 0.9896057895040568, 0.0]
+    - [0.002007113419581547, -0.0019372104937716067, 0.9937316257384206]
+  R_IMUtoGYRO: # imu0:gyroscope:C_gyro_i
+    - [0.9999924427401172, 0.0010709500269209336, 0.0037373157069545116]
+    - [-0.0010607321579314223, 0.9999956975075206, -0.002734924813720767]
+    - [-0.0037402285949846696, 0.002730939854228481, 0.9999892762712859]
+  Ta: # imu0:accelerometers:M
+    - [1.0001951073878819, 0.0, 0.0]
+    - [-0.002271683458374831, 1.001656959758649, 0.0]
+    - [0.03126587729705067, 0.0422639524916351, 0.9983915319900789]
+  R_IMUtoACC: # Not used by Kalibr
+    - [ 1.0, 0.0, 0.0 ]
+    - [ 0.0, 1.0, 0.0 ]
+    - [ 0.0, 0.0, 1.0 ]
+  Tg: # imu0:gyroscopes:A
+    - [1.1347414233298177e-05, -3.403755311404583e-05, 6.025138339943915e-06]
+    - [-5.401557040354213e-05, 3.0084139956895132e-05, 7.255217675293844e-05]
+    - [6.699916261388163e-06, 1.5204362924692286e-05, 4.1260657914752925e-05]
