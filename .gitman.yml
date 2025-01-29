@@ -1,6 +1,6 @@
 location: .gitman
 sources:
-  - repo: hhttps://github.com/LASER-Robotics/open_vins
+  - repo: https://github.com/LASER-Robotics/open_vins
     name: open_vins
     rev: master
     type: git
