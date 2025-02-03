@@ -14,52 +14,52 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            'uav_name',
+            'namespace',
             default_value=EnvironmentVariable('UAV_NAME'),
-            description='Name of the folder containing the file with the parameters.'))
+            description='Top-level namespace.'))
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            'params_folder',
+            'open_vins_params_folder',
             default_value='rs_243522071667',
-            description='Name of the folder containing the file with the parameters.'))
+            description='Name of the folder containing the camera OpenVINS files.'))
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            'verbosity',
-            default_value='DEBUG',
-            description='Verbosity level.'))
+            'topic_imu',
+            default_value=['/', EnvironmentVariable('UAV_NAME'), '/rgbd/imu'],
+            description='Name of the IMU topic.'))
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            'use_stereo',
-            default_value='true',
-            description='If you are using stereo cameras or not.'))
+            'topic_camera0',
+            default_value=['/', EnvironmentVariable('UAV_NAME'), '/rgbd/infra1/image_raw'],
+            description='Name of the camera 0 topic.'))
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            'max_cameras',
-            default_value='2',
-            description='Maximum number of cameras.'))
+            'topic_camera1',
+            default_value=['/', EnvironmentVariable('UAV_NAME'), '/rgbd/infra2/image_raw'],
+            description='Name of the camera 1 topic.'))
 
     # Initialize arguments
-    uav_name = LaunchConfiguration('uav_name')
-    params_folder = LaunchConfiguration('params_folder')
-    verbosity = LaunchConfiguration('verbosity')
-    use_stereo = LaunchConfiguration('use_stereo')
-    max_cameras = LaunchConfiguration('max_cameras')
+    namespace = LaunchConfiguration('namespace')
+    open_vins_params_folder = LaunchConfiguration('open_vins_params_folder')
+    topic_imu = LaunchConfiguration('topic_imu')
+    topic_camera0 = LaunchConfiguration('topic_camera0')
+    topic_camera1 = LaunchConfiguration('topic_camera1')
 
     # Declare nodes
     msckf_node = Node(
         package='ov_msckf',
         executable='run_subscribe_msckf',
-        namespace=uav_name,
+        namespace=namespace,
         output='screen',
-        parameters=[{'uav_name': uav_name,
-                     'verbosity': verbosity,
-                     'use_stereo': use_stereo,
-                     'max_cameras': max_cameras,
+        parameters=[{'namespace': namespace,
+                     'topic_imu': topic_imu,
+                     'topic_camera0': topic_camera0,
+                     'topic_camera1': topic_camera1,
                      'config_path': PathJoinSubstitution([FindPackageShare('laser_open_vins_core'),
-                                                          'params', params_folder, 'estimator_config.yaml'])}])
+                                                          'params', open_vins_params_folder, 'estimator_config.yaml'])}])
 
     return LaunchDescription(declared_arguments + [msckf_node])

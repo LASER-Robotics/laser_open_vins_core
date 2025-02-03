@@ -26,7 +26,7 @@ imu0:
   gyroscope_random_walk: 0.00004169073
 
   model: kalibr
-  rostopic: /uav1/rgbd/imu
+  # rostopic: /uav4/rgbd/imu
   time_offset: 0.0
   update_rate: 400.0
 

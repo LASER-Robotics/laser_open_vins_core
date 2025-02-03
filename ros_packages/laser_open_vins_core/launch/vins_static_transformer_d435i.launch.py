@@ -1,39 +1,32 @@
 from launch import LaunchContext, LaunchDescription
 
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import EnvironmentVariable, LaunchConfiguration, PathJoinSubstitution, TextSubstitution
+from launch.actions import OpaqueFunction
+from launch.substitutions import EnvironmentVariable, TextSubstitution
 
-from launch_ros.actions import ComposableNodeContainer, Node
-from launch_ros.descriptions import ComposableNode
-from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import Node
 
 
 def launch_setup(context: LaunchContext):
-    # Initialize arguments
-    uav_name = LaunchConfiguration('uav_name')
+    uav_name = EnvironmentVariable('UAV_NAME').perform(context)
 
-    uav_name_env = EnvironmentVariable('UAV_NAME').perform(context)
+    fcu_frame = uav_name + '/fcu'
+    fcu_frame_slashless = 'fcu_' + uav_name
 
-    uav_name_str = uav_name_env if uav_name_env else uav_name.perform(context)
-
-    fcu_frame = uav_name_str + '/fcu'
-    fcu_frame_slashless = 'fcu_' + uav_name_str
-
-    open_vins_imu_frame = uav_name_str + '/ov_imu'
-    open_vins_imu_frame_slashless = uav_name_str + '_ov_imu'
+    open_vins_imu_frame = uav_name + '/ov_imu'
+    open_vins_imu_frame_slashless = uav_name + '_ov_imu'
 
     fcu_to_open_vins_imu_tf_static_publisher_node = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name=TextSubstitution(text=fcu_frame_slashless + '_to_' + open_vins_imu_frame_slashless),
-        namespace=TextSubstitution(text=uav_name_str),
+        namespace=TextSubstitution(text=uav_name),
         output='screen',
         arguments=['--x', '0.0',
                    '--y', '0.0',
                    '--z', '0.0',
-                   '--yaw', '-1.508',
+                   '--yaw', '-1.570796',
                    '--pitch', '0.0',
-                   '--roll', '-1.508',
+                   '--roll', '-1.570796',
                    '--frame-id', fcu_frame,
                    '--child-frame-id', open_vins_imu_frame]) # Z250 frame
 
@@ -41,12 +34,4 @@ def launch_setup(context: LaunchContext):
 
 
 def generate_launch_description():
-    # Declare arguments
-    declared_arguments = []
-
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'uav_name',
-            default_value=EnvironmentVariable('UAV_NAME')))
-
-    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
+    return LaunchDescription([OpaqueFunction(function=launch_setup)])
