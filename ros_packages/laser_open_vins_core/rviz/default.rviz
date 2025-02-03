@@ -65,7 +65,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/trackhist
+        Value: /uav1/ov_msckf/trackhist
       Value: true
     - Class: rviz_default_plugins/Image
       Enabled: false
@@ -79,7 +79,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/loop_depth_colored
+        Value: /uav1/ov_msckf/loop_depth_colored
       Value: false
     - Alpha: 1
       Buffer Length: 1
@@ -107,7 +107,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/pathimu
+        Value: /uav1/ov_msckf/pathimu
       Value: true
     - Alpha: 1
       Buffer Length: 1
@@ -135,7 +135,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/pathgt
+        Value: /uav1/ov_msckf/pathgt
       Value: true
     - Alpha: 0.800000011920929
       Autocompute Intensity Bounds: true
@@ -167,7 +167,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/points_msckf
+        Value: /uav1/ov_msckf/points_msckf
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -201,7 +201,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/points_slam
+        Value: /uav1/ov_msckf/points_slam
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -235,7 +235,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/points_aruco
+        Value: /uav1/ov_msckf/points_aruco
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -269,7 +269,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/loop_feats
+        Value: /uav1/ov_msckf/loop_feats
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -303,7 +303,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /uav1/points_sim
+        Value: /uav1/ov_msckf/points_sim
       Use Fixed Frame: true
       Use rainbow: true
       Value: true

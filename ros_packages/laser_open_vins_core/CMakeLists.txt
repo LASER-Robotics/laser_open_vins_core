@@ -13,6 +13,8 @@ install(
   DIRECTORY
   launch
   params
+  rviz
+  plotjuggler
   DESTINATION share/${PROJECT_NAME}
 )
 

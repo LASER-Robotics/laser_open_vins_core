@@ -54,6 +54,7 @@ def generate_launch_description():
         package='ov_msckf',
         executable='run_subscribe_msckf',
         namespace=namespace,
+        name='ov_msckf',
         output='screen',
         parameters=[{'namespace': namespace,
                      'topic_imu': topic_imu,
