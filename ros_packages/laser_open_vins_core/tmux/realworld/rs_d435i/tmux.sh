@@ -41,6 +41,8 @@ input=(
 '
   'VinsTransformer' 'ros2 launch laser_open_vins_core vins_static_transformer_d435i.launch.py
 '
+  'Odometry' 'ros2 topic echo --no-arr /$UAV_NAME/ov_msckf/odomimu
+'
   'Rosbag' 'history -s ros2 bag record /$UAV_NAME/rgbd/infra1/image_raw/compressed /$UAV_NAME/rgbd/infra2/image_raw/compressed /$UAV_NAME/rgbd/imu
 '
 )

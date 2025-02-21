@@ -15,6 +15,7 @@ def launch_setup(context: LaunchContext):
     open_vins_imu_frame = uav_name + '/ov_imu'
     open_vins_imu_frame_slashless = uav_name + '_ov_imu'
 
+    # Declare nodes
     fcu_to_open_vins_imu_tf_static_publisher_node = Node(
         package='tf2_ros',
         executable='static_transform_publisher',

@@ -28,7 +28,7 @@ imu0:
   model: kalibr
   # rostopic: /uav4/rgbd/imu
   time_offset: 0.0
-  update_rate: 400.0
+  update_rate: 200.0
 
   # Parameters from the Kalibr calibration
   Tw: # imu0:gyroscope:M
