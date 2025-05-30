@@ -33,11 +33,11 @@ windows:
   - rviz:
       layout: tiled
       panes:
-        - sleep 3; rviz2 -d /tmp/default.rviz
+        - sleep 3; ros2 launch laser_open_vins_core rviz.launch.py
   - plotjuggler:
       layout: tiled
       panes:
-        - sleep 3; ros2 run plotjuggler plotjuggler -l /tmp/imu_layout.xml
+        - sleep 3; ros2 launch laser_open_vins_core plotjuggler.launch.py
   - odometry:
       layout: tiled
       panes:

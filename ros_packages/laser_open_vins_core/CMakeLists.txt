@@ -8,13 +8,18 @@ endif()
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 
-# Install launch files
 install(
   DIRECTORY
   launch
   params
   rviz
   plotjuggler
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(
+  DIRECTORY scripts tmux
+  USE_SOURCE_PERMISSIONS
   DESTINATION share/${PROJECT_NAME}
 )
 

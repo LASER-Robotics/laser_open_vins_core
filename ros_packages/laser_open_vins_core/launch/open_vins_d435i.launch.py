@@ -26,6 +26,13 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
+            'verbosity',
+            default_value='DEBUG',
+            description='OpenVINS verbosity level.',
+            choices=['ALL', 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'SILENT']))
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'topic_imu',
             default_value=['/', EnvironmentVariable('UAV_NAME'), '/rgbd/imu'],
             description='Name of the IMU topic.'))
@@ -45,6 +52,7 @@ def generate_launch_description():
     # Initialize arguments
     namespace = LaunchConfiguration('namespace')
     open_vins_params_folder = LaunchConfiguration('open_vins_params_folder')
+    verbosity = LaunchConfiguration('verbosity')
     topic_imu = LaunchConfiguration('topic_imu')
     topic_camera0 = LaunchConfiguration('topic_camera0')
     topic_camera1 = LaunchConfiguration('topic_camera1')
@@ -57,6 +65,7 @@ def generate_launch_description():
         name='ov_msckf',
         output='screen',
         parameters=[{'namespace': namespace,
+                     'verbosity': verbosity,
                      'topic_imu': topic_imu,
                      'topic_camera0': topic_camera0,
                      'topic_camera1': topic_camera1,

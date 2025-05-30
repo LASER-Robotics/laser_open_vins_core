@@ -29,7 +29,7 @@ def launch_setup(context: LaunchContext):
                    '--pitch', '0.0',
                    '--roll', '-1.570796',
                    '--frame-id', fcu_frame,
-                   '--child-frame-id', open_vins_imu_frame]) # Z250 frame
+                   '--child-frame-id', open_vins_imu_frame])
 
     return [fcu_to_open_vins_imu_tf_static_publisher_node]
 

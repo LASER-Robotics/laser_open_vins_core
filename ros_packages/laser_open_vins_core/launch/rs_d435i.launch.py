@@ -44,7 +44,7 @@ def launch_setup(context: LaunchContext):
                    '--pitch', '0.0',
                    '--roll', '0.0',
                    '--frame-id', fcu_frame,
-                   '--child-frame-id', realsense_frame]) # Z250 frame
+                   '--child-frame-id', realsense_frame]) # NOTE: Z250 frame
 
     return [realsense_camera_node, fcu_to_realsense_tf_static_publisher_node]
 

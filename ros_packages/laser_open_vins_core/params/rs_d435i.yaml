@@ -52,9 +52,9 @@
     enable_rgbd: false
 
     enable_gyro: true
-    gyro_fps: 400
+    gyro_fps: 200
 
     enable_accel: true
-    accel_fps: 200
+    accel_fps: 100
 
     unite_imu_method: 2 # 0 - none, 1 - copy, 2 - linear interpolation
