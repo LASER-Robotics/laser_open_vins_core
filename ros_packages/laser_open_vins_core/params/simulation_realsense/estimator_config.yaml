@@ -1,0 +1,133 @@
+%YAML:1.0 # Especifica a versão do formato de arquivo YAML.
+
+# ==================================================================
+# =================== CONFIGURAÇÕES GERAIS DO FILTRO =================
+# ==================================================================
+
+verbosity: "DEBUG" # Nível de detalhe dos logs: ALL, DEBUG, INFO, WARNING, ERROR, SILENT.
+use_fej: true # Usar "First-Estimate Jacobians" para garantir a consistência do filtro. Essencial para EKF.
+integration: "rk4" # Método de integração da IMU: "discrete" (Euler), "rk4" (Runge-Kutta 4ª ordem).
+use_stereo: true # Informa ao sistema se está usando um par de câmeras estéreo (true) ou uma só (false).
+max_cameras: 2 # Número máximo de câmeras gerenciadas pelo sistema.
+
+# --- Parâmetros de Calibração Online ---
+calib_cam_extrinsics: false # Permitir que o filtro refine a pose da câmera em relação à IMU durante a execução.
+calib_cam_intrinsics: true # Permitir que o filtro refine os parâmetros intrínsecos da câmera (distância focal, etc.).
+calib_cam_timeoffset: false # Permitir que o filtro estime o atraso de tempo entre a câmera e a IMU.
+calib_imu_intrinsics: false # Permitir que o filtro refine os vieses (biases) e fatores de escala da IMU.
+calib_imu_g_sensitivity: false # Permitir que o filtro estime a sensibilidade do acelerômetro à gravidade.
+
+# --- Gerenciamento de Estado e Janela Deslizante ---
+max_clones: 11 # Tamanho da janela deslizante: número de poses de câmera passadas ("clones") mantidas no estado.
+max_slam: 50 # Número máximo de características (features) persistentes de SLAM mantidas no mapa.
+max_slam_in_update: 25 # Quantas features SLAM processar por lote na etapa de atualização (para controle de carga).
+max_msckf_in_update: 50 # Quantas features MSCKF usar por lote na etapa de atualização.
+dt_slam_delay: 1 # Atraso (em segundos) antes de uma feature ser promovida a uma feature SLAM estável.
+
+# --- Constantes Físicas ---
+gravity_mag: 9.81 # Magnitude da gravidade no local (em m/s^2).
+
+# --- Parametrização das Características ---
+feat_rep_msckf: "ANCHORED_MSCKF_INVERSE_DEPTH" # Representação de features MSCKF (profundidade inversa é robusta).
+feat_rep_slam: "ANCHORED_MSCKF_INVERSE_DEPTH" # Representação de features SLAM.
+feat_rep_aruco: "ANCHORED_MSCKF_INVERSE_DEPTH" # Representação de marcadores ArUco.
+
+# --- Atualização de Velocidade Zero (ZUPT) ---
+try_zupt: false # Tentar detectar quando o sistema está parado para corrigir o viés da IMU.
+zupt_chi2_multipler: 0 # Multiplicador para o limiar de detecção (0 desativa se baseado em IMU).
+zupt_max_velocity: 0.02 # Velocidade máxima para considerar o sistema parado.
+zupt_noise_multiplier: 10 # Multiplicador de ruído ao aplicar a restrição ZUPT.
+zupt_max_disparity: 0.20 # Disparidade máxima para considerar o sistema parado.
+zupt_only_at_beginning: false # Aplicar ZUPT apenas no início.
+
+# ==================================================================
+# =================== CONFIGURAÇÕES DE INICIALIZAÇÃO =================
+# ==================================================================
+
+init_window_time: 2.0 # Segundos de dados a coletar antes de tentar a inicialização.
+init_imu_thresh: 0.10 # Limiar de variância da aceleração para detectar movimento (necessário para inicializar).
+init_max_disparity: 5.0 # Disparidade máxima para considerar a plataforma estacionária.
+init_max_features: 50 # Número máximo de features a rastrear durante a inicialização.
+
+# --- Parâmetros de Inicialização Dinâmica (Avançado) ---
+init_dyn_use: false # Usar o método de inicialização dinâmica (atualmente desativado).
+init_dyn_mle_opt_calib: false
+init_dyn_mle_max_iter: 50
+init_dyn_mle_max_time: 0.05
+init_dyn_mle_max_threads: 6
+init_dyn_num_pose: 6
+init_dyn_min_deg: 5.0
+
+init_dyn_inflation_ori: 10 # Incerteza inicial para orientação.
+init_dyn_inflation_vel: 100 # Incerteza inicial para velocidade.
+init_dyn_inflation_bg: 10 # Incerteza inicial para viés do giroscópio.
+init_dyn_inflation_ba: 100 # Incerteza inicial para viés do acelerômetro.
+init_dyn_min_rec_cond: 1e-15
+
+init_dyn_bias_g: [0.0, 0.0, 0.0] # Palpite inicial para o viés do giroscópio.
+init_dyn_bias_a: [0.0, 0.0, 0.0] # Palpite inicial para o viés do acelerômetro.
+
+# ==================================================================
+# =================== CONFIGURAÇÕES DE GRAVAÇÃO E LOG ================
+# ==================================================================
+
+record_timing_information: false # Gravar informações de tempo de execução para análise de desempenho.
+record_timing_filepath: "/home/wagner/traj_timing.txt" # Caminho para salvar as informações de tempo.
+
+# --- Salvar estado para avaliação ---
+save_total_state: false # Salvar a trajetória estimada completa e sua incerteza.
+filepath_est: "/home/wagner/ov_estimate.txt" # Caminho para salvar a trajetória estimada.
+filepath_std: "/home/wagner/ov_estimate_std.txt" # Caminho para salvar o desvio padrão (incerteza) da estimativa.
+filepath_gt: "/home/wagner/ov_groundtruth.txt" # Caminho para salvar a trajetória de referência (ground truth).
+
+# ==================================================================
+# =================== FRONT-END (RASTREAMENTO DE FEATURES) ==========
+# ==================================================================
+
+# --- Parâmetros do Detector e Rastreador ---
+use_klt: true # Usar o rastreador Kanade-Lucas-Tomasi (KLT), eficiente e robusto.
+num_pts: 200 # Número desejado de pontos a serem rastreados em cada imagem.
+fast_threshold: 20 # Limiar de sensibilidade do detector de cantos FAST.
+grid_x: 5 # Número de colunas na grade para distribuição de features.
+grid_y: 5 # Número de linhas na grade para distribuição de features (garante boa cobertura espacial).
+min_px_dist: 10 # Distância mínima em pixels entre duas features.
+knn_ratio: 0.70 # Ratio test para filtragem de correspondências de descritores (se usados).
+track_frequency: 31.0 # Frequência (Hz) de execução do rastreador de features.
+downsample_cameras: false # Reduzir a resolução da imagem pela metade para acelerar o processamento.
+num_opencv_threads: 4 # Número de threads para funções do OpenCV (-1: auto, 0-1: serial).
+histogram_method: "HISTOGRAM" # Método de pré-processamento para melhorar contraste (NONE, HISTOGRAM, CLAHE).
+
+# --- Parâmetros de Inicialização de Features Estéreo ---
+fi_max_dist: 10.0 # Distância máxima (em metros) para inicializar uma feature.
+fi_max_baseline: 200 # Baseline máxima (em pixels) para triangulação.
+fi_max_cond_number: 25000 # Número de condição máximo para garantir uma boa triangulação.
+
+# --- Rastreamento de Marcadores ArUco ---
+use_aruco: false # Ativar a detecção de marcadores ArUco (fornecem escala e pose absolutas).
+num_aruco: 854 # Número de identificação do marcador ArUco a ser procurado.
+downsize_aruco: true # Reduzir a imagem para detectar ArUco mais rapidamente.
+
+# ==================================================================
+# =================== RUÍDO E REJEIÇÃO DE OUTLIERS ==================
+# ==================================================================
+
+# --- Ruído da Medição em Pixels ---
+up_msckf_sigma_px: 1.2 # Desvio padrão (incerteza) da posição de uma feature MSCKF na imagem.
+up_slam_sigma_px: 1.2 # Desvio padrão da posição de uma feature SLAM na imagem.
+up_aruco_sigma_px: 1 # Desvio padrão da posição de um marcador ArUco (geralmente mais preciso).
+
+# --- Teste Qui-Quadrado para Rejeição de Outliers ---
+up_msckf_chi2_multipler: 1 # Multiplicador do limiar qui-quadrado para features MSCKF (>1 mais tolerante, <1 mais rigoroso).
+up_slam_chi2_multipler: 1 # Multiplicador do limiar qui-quadrado para features SLAM.
+up_aruco_chi2_multipler: 1 # Multiplicador do limiar qui-quadrado para marcadores ArUco.
+
+# --- Máscara de Imagem ---
+use_mask: false # Usar uma máscara para ignorar regiões específicas da imagem.
+
+# ==================================================================
+# =================== ARQUIVOS DE CALIBRAÇÃO EXTERNA ================
+# ==================================================================
+
+# Aponta para arquivos de calibração gerados por ferramentas como o Kalibr.
+relative_config_imu: "kalibr_imu_chain.yaml" # Contém os parâmetros de ruído e viés da IMU.
+relative_config_imucam: "kalibr_imucam_chain.yaml" # Contém a calibração extrínseca (IMU-Câmera) e temporal.

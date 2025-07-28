@@ -1,0 +1,36 @@
+%YAML:1.0
+
+cam0:
+  T_cam_imu: # Rotação = Identidade. Translação: Cam0 está 2.5cm à DIREITA da IMU (ao longo do eixo X da IMU/Câmera)
+    - [1.0, 0.0, 0.0, 0.0] 
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: [1]
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan # Ou pinhole, já que os coeficientes são zero
+  intrinsics: [462.1379699707031, 462.1379699707031,  320.0, 240.0] # Intrínsecos da sua simulação
+  resolution: [640, 480]
+  # rostopic: /{{ YOUR_NAMESPACE_HERE }}/front_rgbd/infra1/image_raw # Lembre-se de definir
+  timeshift_cam_imu: 0.02439
+
+cam1:
+  T_cam_imu: # Rotação = Identidade. Translação: Cam1 está 2.5cm à ESQUERDA da IMU
+    - [1.0, 0.0, 0.0, -0.05]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  T_cn_cnm1: # Transformação da cam1 para cam0. Rotação = Identidade. Translação = Baseline de -5cm no X da cam0
+    - [1.0, 0.0, 0.0, -0.05] # Origem da Cam1 está em x_cam0 = -0.05m
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: [0]
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan # Ou pinhole
+  intrinsics: [462.1379699707031, 462.1379699707031,  320.0, 240.0] # Intrínsecos da sua simulação
+  resolution: [640, 480]
+  # rostopic: /{{ YOUR_NAMESPACE_HERE }}/front_rgbd/infra2/image_raw # Lembre-se de definir
+  timeshift_cam_imu: 0.02439
