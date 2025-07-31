@@ -2,19 +2,19 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>laser_open_vins_core</name>
-  <version>0.1.0</version>
-  <description>The laser_open_vins_core package</description>
+  <version>1.0.0</version>
+  <description>The laser_open_vins_core metapackage</description>
+
+  <author email="thulioguilherme@hotmail.com">thulioguilherme</author>
   <maintainer email="thulioguilherme@hotmail.com">thulioguilherme</maintainer>
+
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>launch</exec_depend>
-  <exec_depend>launch_ros</exec_depend>
-
-  <exec_depend>realsense2_camera</exec_depend>
-  <exec_depend>ov_msckf</exec_depend>
-  <exec_depend>tf2_ros</exec_depend>
+  <depend>laser_vins_republisher</depend>
+  <depend>laser_vins_imu_filter</depend>
+  <depend>ov_msckf</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

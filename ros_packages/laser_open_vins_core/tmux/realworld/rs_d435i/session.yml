@@ -1,0 +1,49 @@
+root: ./
+name: realworld
+startup_window: open_vins
+pre_window:
+windows:
+  - px4_api:
+      layout: even-horizontal
+      panes:
+        - sleep 1; ros2 launch laser_uav_px4_api api.launch.py
+        - sudo MicroXRCEAgent serial --dev /dev/ttyUSB3 -b 921600
+  - control_manager:
+      layout: tiled
+      panes:
+        - sleep 1; ros2 launch laser_uav_managers control_manager.launch.py
+        - 'history -s ros2 service call /$UAV_NAME/px4_api/arm std_srvs/srv/Trigger {}'
+        - 'history -s ros2 service call /$UAV_NAME/control_manager/takeoff std_srvs/srv/Trigger {}'
+        - 'history -s ros2 service call /$UAV_NAME/control_manager/land std_srvs/srv/Trigger {}'
+  - realsense:
+      layout: tiled
+      panes:
+        - ros2 launch realsense2_camera rs_camera.launch.py
+  - open_vins:
+      layout: tiled
+      panes:
+        - ros2 launch laser_open_vins_core open_vins.launch.py
+  - vins_imu_filter:
+      layout: tiled
+      panes:
+        - ros2 launch laser_vins_imu_filter vins_imu_filter.launch.py
+  - vins_republisher:
+      layout: even-horizontal
+      panes:
+        - ros2 launch laser_vins_republisher vins_republisher.launch.py
+        - sleep 10; ros2 topic echo --no-arr /$UAV_NAME/vins_republisher/odometry
+  - trajectory:
+      layout: tiled
+      panes:
+        - 'history -s ros2 topic pub -1 /$UAV_NAME/control_manager/trajectory_path laser_msgs/msg/TrajectoryPath \"{speed: 1.0, waypoints: [
+          {position: {x: 1.0, y: 1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
+          {position: {x: 1.0, y: -1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
+          {position: {x: -1.0, y: -1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
+          {position: {x: -1.0, y: 1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
+          {position: {x: 1.0, y: 1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
+          {position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}
+        ]}\"'
+  - goto:
+      layout: tiled
+      panes:
+        - 'history -s ros2 topic pub -1 /$UAV_NAME/control_manager/goto geometry_msgs/msg/Pose \"{position: {x: 0.0, y: 0.0, z: 1.5}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}\"'
