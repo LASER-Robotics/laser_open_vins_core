@@ -12,7 +12,7 @@ sources:
         target: ros_packages/open_vins
     scripts:
       - git submodule update --init --recursive
-  - repo: https://github.com/LASER-Robotics/laser_vins_imu_filter
+  - repo: git@github.com:LASER-Robotics/laser_vins_imu_filter.git
     name: laser_vins_imu_filter
     rev: refactor
     type: git
@@ -24,7 +24,7 @@ sources:
         target: ros_packages/laser_vins_imu_filter
     scripts:
       - git submodule update --init --recursive
-  - repo: https://github.com/LASER-Robotics/laser_vins_republisher
+  - repo: git@github.com:LASER-Robotics/laser_vins_republisher.git
     name: laser_vins_republisher
     rev: refactor
     type: git
