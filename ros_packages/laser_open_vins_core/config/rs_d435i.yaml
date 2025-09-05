@@ -1,0 +1,7 @@
+run_subscriber_msckf:
+  remappings:
+    imu_in: 'rgbd/imu'
+    camera0_in: 'rgbd/infra1/image_raw'
+    camera1_in: 'rgbd/infra2/image_raw'
+
+  estimator_config_folder: 'rs_238222072435'

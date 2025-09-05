@@ -1,21 +1,34 @@
-from launch import LaunchDescription
-
-from launch.substitutions import PathJoinSubstitution
+import launch
 
 from launch.actions import ExecuteProcess
+from launch.substitutions import PathJoinSubstitution
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    # Declare commands
-    refactor_plotjuggler_config_cmd = ExecuteProcess(
-        cmd=[PathJoinSubstitution([FindPackageShare('laser_open_vins_core'),
-                                  'scripts', 'refactor_plotjuggler_config.sh'])],
-        output='screen')
+    ld = launch.LaunchDescription()
 
-    # Declare nodes
+    # #{ refactor script
+
+    refactor_plotjuggler_config_cmd = ExecuteProcess(
+        cmd=[
+            PathJoinSubstitution([
+                FindPackageShare('laser_open_vins_core'),
+                'scripts',
+                'refactor_plotjuggler_config.sh'
+            ])
+        ],
+        output='screen'
+    )
+
+    ld.add_action(refactor_plotjuggler_config_cmd)
+
+    # #}
+
+    # #{ plotjuggler node
+
     plotjuggler_node = Node(
         package='plotjuggler',
         executable='plotjuggler',
@@ -24,4 +37,8 @@ def generate_launch_description():
         arguments=['-l /tmp/imu_layout.xml'],
         prefix=["bash -c 'sleep 2; $0 $@'"])
 
-    return LaunchDescription([refactor_plotjuggler_config_cmd, plotjuggler_node])
+    ld.add_action(plotjuggler_node)
+
+    # #}
+
+    return ld

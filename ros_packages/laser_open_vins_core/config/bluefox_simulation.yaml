@@ -1,0 +1,6 @@
+run_subscriber_msckf:
+  remappings:
+    imu_in: 'vio/imu'
+    camera0_in: 'vio_camera/image_raw'
+
+  estimator_config_folder: 'bluefox_simulation'

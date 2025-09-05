@@ -7,17 +7,17 @@ find_package(ament_cmake REQUIRED)
 install(
   DIRECTORY
   launch
-  params
+  config
   rviz
   plotjuggler
   DESTINATION share/${PROJECT_NAME}
-)
+  )
 
 install(
   DIRECTORY scripts tmux
   USE_SOURCE_PERMISSIONS
   DESTINATION share/${PROJECT_NAME}
-)
+  )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

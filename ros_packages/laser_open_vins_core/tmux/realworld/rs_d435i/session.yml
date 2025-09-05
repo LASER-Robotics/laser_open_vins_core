@@ -15,14 +15,10 @@ windows:
         - 'history -s ros2 service call /$UAV_NAME/px4_api/arm std_srvs/srv/Trigger {}'
         - 'history -s ros2 service call /$UAV_NAME/control_manager/takeoff std_srvs/srv/Trigger {}'
         - 'history -s ros2 service call /$UAV_NAME/control_manager/land std_srvs/srv/Trigger {}'
-  - realsense:
-      layout: tiled
-      panes:
-        - ros2 launch realsense2_camera rs_camera.launch.py
   - open_vins:
       layout: tiled
       panes:
-        - ros2 launch laser_open_vins_core open_vins.launch.py
+        - ros2 launch laser_open_vins_core vio_realsense.launch.py
   - vins_imu_filter:
       layout: tiled
       panes:
