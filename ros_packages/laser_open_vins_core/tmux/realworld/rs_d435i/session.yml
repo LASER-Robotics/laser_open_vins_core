@@ -6,8 +6,8 @@ windows:
   - px4_api:
       layout: even-horizontal
       panes:
-        - sleep 1; ros2 launch laser_uav_px4_api api.launch.py
-        - sudo MicroXRCEAgent serial --dev /dev/ttyUSB3 -b 921600
+        - ros2 launch laser_uav_px4_api api.launch.py
+        - ros2 launch laser_uav_deployment uxrce.launch.py 
   - control_manager:
       layout: tiled
       panes:
@@ -36,14 +36,14 @@ windows:
       layout: tiled
       panes:
         - 'history -s ros2 topic pub -1 /$UAV_NAME/control_manager/trajectory_path laser_msgs/msg/TrajectoryPath \"{speed: 1.0, waypoints: [
-          {position: {x: 1.0, y: 1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
-          {position: {x: 1.0, y: -1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
-          {position: {x: -1.0, y: -1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
-          {position: {x: -1.0, y: 1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
-          {position: {x: 1.0, y: 1.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}},
-          {position: {x: 0.0, y: 0.0, z: 2.0}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}
+          {position: {x: 1.0, y: 1.0, z: 2.0}, heading: 0.0},
+          {position: {x: 1.0, y: -1.0, z: 2.0}, heading: 0.0},
+          {position: {x: -1.0, y: -1.0, z: 2.0}, heading: 0.0},
+          {position: {x: -1.0, y: 1.0, z: 2.0}, heading: 0.0},
+          {position: {x: 1.0, y: 1.0, z: 2.0}, heading: 0.0},
+          {position: {x: 0.0, y: 0.0, z: 2.0}, heading: 0.0}
         ]}\"'
   - goto:
       layout: tiled
       panes:
-        - 'history -s ros2 topic pub -1 /$UAV_NAME/control_manager/goto geometry_msgs/msg/Pose \"{position: {x: 0.0, y: 0.0, z: 1.5}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}\"'
+        - 'history -s ros2 topic pub -1 /$UAV_NAME/control_manager/goto geometry_msgs/msg/Pose \"{position: {x: 0.0, y: 0.0, z: 1.5}, heading: 0.0}\"'
