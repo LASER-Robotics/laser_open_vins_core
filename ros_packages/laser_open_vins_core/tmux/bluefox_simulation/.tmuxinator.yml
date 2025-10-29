@@ -1,17 +1,21 @@
 root: ./
 name: simulation
 startup_window: open_vins
-pre_window: export UAV_NAME=uav1; export UAV_TYPE=x500; export UAV_ESTIMATION_SOURCE=VIO
+pre_window: export UAV_NAME=uav1; export UAV_TYPE=x500
 windows:
   - spawn:
       layout: even-horizontal
       panes:
-        - ros2 launch laser_uav_simulation gazebo.launch.py
+        - ros2 launch laser_uav_simulation gazebo.launch.py world:=$(ros2 pkg prefix laser_gazebo_resources)/share/laser_gazebo_resources/worlds/forest 
         - ros2 launch laser_uav_simulation spawn_drones.launch.py spawn_drones_file:=./configs/spawn.yaml
   - px4_api:
       layout: tiled
       panes:
         - sleep 1; ros2 launch laser_uav_px4_api api.launch.py api_file:="./configs/api.yaml"
+  - estimation_manager:
+      layout: tiled
+      panes:
+        - sleep 1; ros2 launch laser_uav_managers estimation_manager.launch.py params_file:="./configs/estimation_manager.yaml"
   - control_manager:
       layout: tiled
       panes:
@@ -33,8 +37,8 @@ windows:
   - odometry:
       layout: even-horizontal
       panes:
-        - sleep 10; ros2 topic echo --no-arr /$UAV_NAME/ground_truth
-        - sleep 10; ros2 topic echo --no-arr /$UAV_NAME/vins_republisher/odometry
+        - sleep 6; ros2 topic echo --no-arr /$UAV_NAME/ground_truth
+        - sleep 6; ros2 topic echo --no-arr /$UAV_NAME/estimation_manager/estimation
   - goto:
       layout: tiled 
       panes:
