@@ -66,3 +66,7 @@ The `params/` directory contains subfolders for each specific sensor setup. To a
 The package includes scripts in the `scripts/` directory to facilitate visualization:
 -   `refactor_rviz_config.sh`: Automatically updates RViz configuration files with the correct UAV namespace.
 -   `refactor_plotjuggler_config.sh`: Automatically updates PlotJuggler layouts.
+
+### **TODOs**
+
+  * [ ] Create a code to align the ground truth odometry with the OpenVINS odometry
