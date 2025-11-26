@@ -67,6 +67,14 @@ The package includes scripts in the `scripts/` directory to facilitate visualiza
 -   `refactor_rviz_config.sh`: Automatically updates RViz configuration files with the correct UAV namespace.
 -   `refactor_plotjuggler_config.sh`: Automatically updates PlotJuggler layouts.
 
-### **TODOs**
+## Packages Included
+
+| Package | Description | Repository |
+| :--- | :--- | :--- |
+| `open_vins` | Contains the node that implements the OpenVINS algorithm. | [Link to repo](https://github.com/LASER-Robotics/open_vins) |
+| `laser_vins_republisher` | Contains the node that formats and republishes the raw odometry output from OpenVINS. | [Link to repo](https://github.com/LASER-Robotics/laser_vins_republisher) |
+| `laser_vins_imu_filter` | Contains the node that filters IMU data before it is fed into OpenVINS. | [Link to repo](https://github.com/LASER-Robotics/laser_vins_imu_filter) |
+
+## **TODOs**
 
   * [ ] Create a code to align the ground truth odometry with the OpenVINS odometry
