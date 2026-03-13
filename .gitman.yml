@@ -12,7 +12,7 @@ sources:
         target: ros_packages/open_vins
     scripts:
       - git submodule update --init --recursive
-  - repo: git@github.com:LASER-Robotics/laser_vins_republisher.git
+  - repo: https://github.com/LASER-Robotics/laser_vins_republisher.git
     name: laser_vins_republisher
     rev: stable
     type: git
