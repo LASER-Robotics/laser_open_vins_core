@@ -11,7 +11,7 @@ windows:
   - px4_api:
       layout: tiled
       panes:
-        - sleep 1; ros2 launch laser_uav_px4_api api.launch.py api_file:="./configs/api.yaml"
+        - sleep 1; ros2 launch laser_uav_hw_api px4_api.launch.py api_file:="./configs/api.yaml"
         - sleep 1; ros2 run laser_uav_simulation autostart.py 
   - estimation_manager:
       layout: tiled
