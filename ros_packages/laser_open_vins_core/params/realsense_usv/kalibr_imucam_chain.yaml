@@ -1,0 +1,35 @@
+%YAML:1.0
+
+# Geometria da camera simulada em components.sdf.jinja. O sensor infravermelho
+# publica em 848x480 com HFOV de 1.211259 rad.
+cam0:
+  T_cam_imu:
+    - [1.0, 0.0, 0.0, 0.0175]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: [1]
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan
+  intrinsics: [612.33344, 612.33344, 424.5, 240.5]
+  resolution: [848, 480]
+  timeshift_cam_imu: 0.0
+cam1:
+  T_cam_imu:
+    - [1.0, 0.0, 0.0, -0.0325]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  T_cn_cnm1:
+    - [1.0, 0.0, 0.0, -0.05]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: [0]
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan
+  intrinsics: [612.33344, 612.33344, 424.5, 240.5]
+  resolution: [848, 480]
+  timeshift_cam_imu: 0.0

@@ -1,0 +1,35 @@
+%YAML:1.0
+
+cam0:
+  T_cam_imu:
+    - [1.0, 0.0, 0.0, 0.0175]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: [1]
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan
+  intrinsics: [462.1379497504639, 462.13796567382093, 320.5, 180.5]
+  resolution: [640, 360]
+  # rostopic: /uav2/rgbd/infra1/image_raw
+  timeshift_cam_imu: 0.0
+cam1:
+  T_cam_imu:
+    - [1.0, 0.0, 0.0, 0.0325]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  T_cn_cnm1:
+    - [1.0, 0.0, 0.0, -0.05]
+    - [0.0, 1.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.0, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  cam_overlaps: [0]
+  camera_model: pinhole
+  distortion_coeffs: [0.0, 0.0, 0.0, 0.0]
+  distortion_model: radtan
+  intrinsics: [462.1379497504639, 462.13796567382093, 320.5, 180.5]
+  resolution: [640, 360]
+  # rostopic: /uav2/rgbd/infra2/image_raw
+  timeshift_cam_imu: 0.0

@@ -1,0 +1,43 @@
+%YAML:1.0
+
+# SOMENTE SIMULACAO: densidades efetivas provisórias para o jitter observado
+# no front_rgbd/imu com ground truth praticamente imovel (18/09/2026).
+# max(std por eixo)/sqrt(125 Hz), arredondado: accel ~0.025, gyro ~0.0004.
+# Amostra de 3.1 s: nao substitui calibracao Allan nem se aplica a IMU real.
+# Ondas/movimento fisico nao devem ser tratados como ruido. Ver ../USV_OUTDOOR.md.
+imu0:
+  T_i_b:
+    - [ 1.0, 0.0, 0.0, 0.0 ]
+    - [ 0.0, 1.0, 0.0, 0.0 ]
+    - [ 0.0, 0.0, 1.0, 0.0 ]
+    - [ 0.0, 0.0, 0.0, 1.0 ]
+
+  accelerometer_noise_density: 0.25
+  accelerometer_random_walk: 0.001
+  gyroscope_noise_density: 0.004
+  gyroscope_random_walk: 0.0001
+
+  model: kalibr
+  time_offset: 0.0
+  update_rate: 125.0
+
+  Tw:
+    - [ 1.0, 0.0, 0.0 ]
+    - [ 0.0, 1.0, 0.0 ]
+    - [ 0.0, 0.0, 1.0 ]
+  R_IMUtoGYRO:
+    - [ 1.0, 0.0, 0.0 ]
+    - [ 0.0, 1.0, 0.0 ]
+    - [ 0.0, 0.0, 1.0 ]
+  Ta:
+    - [ 1.0, 0.0, 0.0 ]
+    - [ 0.0, 1.0, 0.0 ]
+    - [ 0.0, 0.0, 1.0 ]
+  R_IMUtoACC:
+    - [ 1.0, 0.0, 0.0 ]
+    - [ 0.0, 1.0, 0.0 ]
+    - [ 0.0, 0.0, 1.0 ]
+  Tg:
+    - [ 0.0, 0.0, 0.0 ]
+    - [ 0.0, 0.0, 0.0 ]
+    - [ 0.0, 0.0, 0.0 ]

@@ -1,0 +1,137 @@
+%YAML:1.0
+
+# USV outdoor / rio - MONO + IMU (camera SIMULADA 848x480).
+# Perfil inicial para comparar mono/stereo; requer inicio realmente imovel.
+# Limiares ainda precisam de validacao em rosbag. Ver ../USV_OUTDOOR.md.
+verbosity: "INFO"
+
+# FILTER / CALIBRATION
+use_fej: true
+integration: "rk4"
+use_stereo: false
+max_cameras: 1
+
+# Preservar a geometria conhecida da simulacao nos dois experimentos.
+calib_cam_extrinsics: false
+calib_cam_intrinsics: false
+calib_cam_timeoffset: false
+calib_imu_intrinsics: false
+calib_imu_g_sensitivity: false
+
+# STATE / MSCKF / SLAM
+# Mesma janela nos dois modos: aproximadamente 1 s com tracking a 30 Hz.
+# Mais baseline temporal para movimento lento; verificar custo no timing.
+max_clones: 30
+max_slam: 50
+max_slam_in_update: 25
+max_msckf_in_update: 100
+# Dar tempo para o estimador estabilizar antes dos landmarks persistentes.
+dt_slam_delay: 5
+
+gravity_mag: 9.81
+feat_rep_msckf: "ANCHORED_MSCKF_INVERSE_DEPTH"
+feat_rep_slam: "ANCHORED_MSCKF_INVERSE_DEPTH"
+feat_rep_aruco: "ANCHORED_MSCKF_INVERSE_DEPTH"
+
+# ZERO VELOCITY UPDATE (ZUPT)
+try_zupt: true
+zupt_chi2_multipler: 1
+zupt_max_velocity: 0.1
+# Usa as densidades efetivas da IMU simulada em kalibr_imu_chain.yaml.
+# Validacao offline de repouso; verificar saida lenta no ensaio real.
+zupt_noise_multiplier: 10
+# Repouso inicial avaliado pela IMU e pela velocidade estimada.
+# Zero desativa a aceitacao por disparidade visual: a agua pode se mover
+# mesmo com o robo parado. Nao ha remocao de features moveis por este ajuste.
+zupt_max_disparity: 0.0
+# Evita reativar ZUPT em navegacao lenta com margem distante.
+# Para testar paradas posteriores, ver as ressalvas em ../USV_OUTDOOR.md.
+zupt_only_at_beginning: true
+
+# INITIALIZATION
+# Manter o robo fisicamente imovel por pelo menos 4 s; motor desligado nao
+# basta se houver deriva/oscilacao. Aguarde a mensagem de inicializacao.
+init_window_time: 4.0
+init_imu_thresh: 0.50
+# A agua nao deve bloquear o startup de um robo confirmado como imovel.
+# Zero ignora a disparidade SOMENTE na decisao de inicializacao; a IMU ainda
+# deve passar no teste estatico. As imagens continuam sendo rastreadas.
+init_max_disparity: 0.0
+# Orcamento total, dividido pelo numero de cameras no codigo local.
+init_max_features: 200
+# Compatibilidade com o parser local: init_max_disparity=0 exige esta flag.
+# Com disparidade desativada, try_zupt=true e init_imu_thresh>0, o fluxo local
+# escolhe o inicializador ESTATICO; a flag nao implica iniciar em movimento.
+init_dyn_use: true
+
+# Inativos no fluxo estatico acima. Iguais nos dois perfis.
+init_dyn_mle_opt_calib: false
+init_dyn_mle_max_iter: 50
+init_dyn_mle_max_time: 0.50
+init_dyn_mle_max_threads: 6
+init_dyn_num_pose: 8
+init_dyn_min_deg: 10.0
+init_dyn_inflation_ori: 10
+init_dyn_inflation_vel: 100
+init_dyn_inflation_bg: 10
+init_dyn_inflation_ba: 100
+init_dyn_min_rec_cond: 1e-12
+init_dyn_bias_g: [ 0.0, 0.0, 0.0 ]
+init_dyn_bias_a: [ 0.0, 0.0, 0.0 ]
+
+# TIMING / OUTPUT
+# Arquivos separados para nao misturar os dois processos.
+record_timing_information: true
+record_timing_filepath: "/tmp/ov_usv_mono_timing.txt"
+# O ROS2Visualizer local le estas quatro opcoes dos parametros ROS, nao
+# deste YAML. Para comparar trajetorias, gravar os topicos odomimu/poseimu.
+save_total_state: false
+filepath_est: "/tmp/ov_usv_mono_estimate.txt"
+filepath_std: "/tmp/ov_usv_mono_std.txt"
+filepath_gt: "/tmp/ov_usv_mono_groundtruth.txt"
+
+# FEATURE TRACKING
+use_klt: true
+# Orcamento TOTAL: dividido por max_cameras, nao 600 por camera no stereo.
+num_pts: 600
+# Menos cantos fracos e maior espacamento. FAST nao distingue agua de terra.
+fast_threshold: 20
+grid_x: 10
+grid_y: 8
+min_px_dist: 12
+# So e usado pelo tracker de descritores, nao pelo KLT selecionado acima.
+knn_ratio: 0.70
+# Camera simulada a 60 Hz; limite 31 permite selecionar cerca de 30 Hz.
+track_frequency: 31.0
+downsample_cameras: false
+num_opencv_threads: 4
+histogram_method: "HISTOGRAM"
+
+multi_threading_pubs: true
+multi_threading_subs: true
+
+use_aruco: false
+num_aruco: 1024
+downsize_aruco: false
+
+# FEATURE INITIALIZATION / UPDATES
+# fi_max_baseline e razao distancia/baseline, NAO baseline em metros.
+# Nao relaxar os testes geometricos para aceitar pontos distantes sem paralaxe.
+fi_max_dist: 100.0
+fi_max_baseline: 200
+fi_max_cond_number: 25000
+up_msckf_sigma_px: 1.2
+up_msckf_chi2_multipler: 1
+up_slam_sigma_px: 1.2
+up_slam_chi2_multipler: 1
+up_aruco_sigma_px: 1
+up_aruco_chi2_multipler: 1
+
+# MASK
+# Experimento de base do mestrado: imagem inteira, incluindo agua e objetos
+# moveis. Nenhuma mascara espacial ou segmentacao especifica e aplicada.
+# Permanecem os testes geometricos/outlier rejection nativos do OpenVINS.
+use_mask: false
+
+relative_config_imu: "kalibr_imu_chain.yaml"
+relative_config_imucam: "kalibr_imucam_chain.yaml"
