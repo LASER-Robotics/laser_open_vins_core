@@ -49,7 +49,7 @@ The OpenVINS node is named `ov_msckf` under the selected namespace. For `uav1`:
 | Output | `/uav1/ov_msckf/points_msckf`, `points_slam`, `points_aruco` | `sensor_msgs/msg/PointCloud2` | Feature visualizations under the same node prefix. |
 | Output | `/uav1/ov_msckf/num_points_slam`, `num_points_msckf` | `std_msgs/msg/Float64` | Feature counts under the same node prefix. |
 
-The republisher publishes `/uav1/vins_republisher/odometry` (`nav_msgs/msg/Odometry`) for the estimation manager. See its [README](ros_packages/laser_vins_republisher/README.md) for transforms and configuration.
+The republisher publishes `/uav1/vins_republisher/odometry` (`nav_msgs/msg/Odometry`) for the estimation manager. See its [README](https://github.com/LASER-Robotics/laser_vins_republisher) for transforms and configuration.
 
 ## Configuration
 
@@ -96,4 +96,4 @@ Use the profile calibrated for your sensor, mounting and image resolution. The e
 
 `rviz.launch.py` and `plotjuggler.launch.py` use the supplied layouts and namespace-adjustment scripts. The `tmux/bluefox_simulation/` session starts the VIO simulation and the LUS stack with its own sensor and manager settings.
 
-For the algorithm, evaluation tools and citation, see the [OpenVINS README](ros_packages/open_vins/ReadMe.md).
+For the algorithm, evaluation tools and citation, see the [OpenVINS README](https://github.com/LASER-Robotics/open_vins).
