@@ -1,80 +1,99 @@
 # LASER OpenVINS Core
 
-This package serves as the **core integration point** for the OpenVINS (Visual-Inertial Navigation System) within the Laser UAV System (LUS). It acts as a configuration manager and launch wrapper, ensuring that the standard `ov_msckf` algorithm runs correctly with the specific parameters and topic names required by our drone architecture.
+`laser_open_vins_core` integrates OpenVINS into the LASER UAV System (LUS). It provides camera/IMU profiles, launch files and visualization settings. OpenVINS estimates motion from images and IMU measurements; `laser_vins_republisher` converts its odometry for the estimation manager.
 
-## Overview
+The integration package lives in `ros_packages/laser_open_vins_core`. [.gitman.yml](.gitman.yml) selects the OpenVINS and republisher repositories.
 
-The `laser_open_vins_core` package is responsible for:
-1.  **Orchestration:** Launching the OpenVINS node (`ov_msckf`) with dynamic ROS 2 namespaces and topic remappings.
-2.  **Configuration Management:** Storing and loading calibrated parameters (intrinsics/extrinsics) and estimator settings for different camera/IMU setups (e.g., Realsense D435i, Bluefox).
-3.  **Visualization:** Providing helper scripts and configurations for RViz and PlotJuggler to visualize the VIO state seamlessly.
+## Install and run
 
-It is designed to work in conjunction with `laser_vins_republisher` (for covariance rotation and path generation) and `laser_vins_imu_filter` (for signal conditioning).
+Install the component repositories from this directory:
 
-## How It Works
+```bash
+gitman install
+```
 
-This package creates an abstraction layer over the standard OpenVINS launch process. Instead of manually editing configuration files for every flight or drone, the launch files here accept arguments to select the hardware profile dynamically.
+With their ROS packages available in the workspace:
 
-### 1. Dynamic Parameter Loading
-The system uses the `open_vins_params_folder` argument to locate the correct configuration files.
--   Inside the `params/` directory, each subfolder (e.g., `rs_244622073910`) corresponds to a specific sensor set.
--   When the launch file runs, it constructs the path to `estimator_config.yaml` inside that folder and passes it to the `ov_msckf` node.
--   This allows multiple drones with different camera calibrations to share the same codebase.
+```bash
+colcon build --packages-up-to laser_open_vins_core laser_vins_republisher
+source install/setup.bash
+```
 
-### 2. Topic Abstraction
-The launch file accepts generic arguments for sensor topics (`topic_imu`, `topic_camera0`) and handles the remapping to the estimator's expected inputs. It also automatically applies the UAV's `namespace` to ensure multi-robot compatibility.
+Select the profile for your camera and IMU:
 
-### 3. Visualization Helpers
-To make debugging easier, this package includes scripts (e.g., `refactor_rviz_config.sh`) that automatically update RViz configuration files with the current UAV namespace before launching the visualizer. This prevents the common issue of RViz listening to `/uav1/odom` when you are flying `/uav2`.
+```bash
+export UAV_NAME=uav1
+ros2 launch laser_open_vins_core open_vins.launch.py open_vins_params_folder:=rs_244622073910 namespace:=uav1
+```
 
-## Launch Files
+Start the odometry republisher in another terminal:
 
-### 1. `open_vins.launch.py`
-This is the main launch file to start the Visual-Inertial Odometry estimator.
+```bash
+ros2 launch laser_vins_republisher vins_republisher.launch.py namespace:=uav1
+```
 
--   **Usage:**
-    ```bash
-    ros2 launch laser_open_vins_core open_vins.launch.py open_vins_params_folder:=rs_244622073910 namespace:=uav1
-    ```
+Camera drivers and IMU filtering run separately. Use `laser_uav_imu_filter` when the sensor stream needs filtering. The OpenVINS launch starts only the estimator.
 
--   **Arguments:**
-    -   `namespace` (default: `uav1`): Top-level namespace for the drone.
-    -   `use_sim_time` (default: `false`): Set to `true` if running in simulation.
-    -   `open_vins_params_folder` (default: `rs_238222072435`): **Crucial**. Specifies the folder name inside `params/` containing the calibration files for the specific sensor suite being used.
-    -   `verbosity` (default: `DEBUG`): Logging level (`ALL`, `DEBUG`, `INFO`, `WARNING`, `ERROR`, `SILENT`).
-    -   `topic_imu`: Topic name for the IMU stream.
-    -   `topic_camera0`: Topic name for the first camera (infra1/left).
-    -   `topic_camera1`: Topic name for the second camera (infra2/right).
+## Interfaces
 
-### 2. `rviz.launch.py`
-Launches RViz 2 with a pre-configured view for OpenVINS, automatically refactoring topic names based on the environment.
+The OpenVINS node is named `ov_msckf` under the selected namespace. For `uav1`:
 
--   **Usage:**
-    ```bash
-    ros2 launch laser_open_vins_core rviz.launch.py
-    ```
+| Direction | Topic | Type | Purpose |
+| --- | --- | --- | --- |
+| Input | `topic_imu`, default `/uav1/rgbd/imu` | `sensor_msgs/msg/Imu` | Inertial measurements. |
+| Input | `topic_camera0`, default `/uav1/rgbd/infra1/image_raw` | `sensor_msgs/msg/Image` | First camera images. |
+| Input | `topic_camera1`, default `/uav1/rgbd/infra2/image_raw` | `sensor_msgs/msg/Image` | Second camera images when enabled by the profile. |
+| Output | `/uav1/ov_msckf/odomimu` | `nav_msgs/msg/Odometry` | Estimated IMU state, consumed by the republisher. |
+| Output | `/uav1/ov_msckf/poseimu` | `geometry_msgs/msg/PoseWithCovarianceStamped` | Estimated pose and covariance. |
+| Output | `/uav1/ov_msckf/pathimu` | `nav_msgs/msg/Path` | Estimated path. |
+| Output | `/uav1/ov_msckf/points_msckf`, `points_slam`, `points_aruco` | `sensor_msgs/msg/PointCloud2` | Feature visualizations under the same node prefix. |
+| Output | `/uav1/ov_msckf/num_points_slam`, `num_points_msckf` | `std_msgs/msg/Float64` | Feature counts under the same node prefix. |
+
+The republisher publishes `/uav1/vins_republisher/odometry` (`nav_msgs/msg/Odometry`) for the estimation manager. See its [README](ros_packages/laser_vins_republisher/README.md) for transforms and configuration.
 
 ## Configuration
 
-The `params/` directory contains subfolders for each specific sensor setup. To add a new drone or camera setup, create a new folder here containing the standard OpenVINS configuration files:
--   `estimator_config.yaml`: Core filter parameters (noise, features, window size).
--   `kalibr_imucam_chain.yaml`: Camera-IMU extrinsics and camera intrinsics.
--   `kalibr_imu_chain.yaml`: IMU noise characteristics.
+### Launch arguments
 
-### Helper Scripts
+| Argument | Default | Meaning |
+| --- | --- | --- |
+| `namespace` | `UAV_NAME`, or `uav1` | Namespace for the OpenVINS node. |
+| `use_sim_time` | `true` when `REAL_UAV=false` | Uses the simulation clock. |
+| `open_vins_params_folder` | `rs_238222072435` | Profile folder inside the installed integration's `params/`. |
+| `verbosity` | `DEBUG` | `ALL`, `DEBUG`, `INFO`, `WARNING`, `ERROR` or `SILENT`. |
+| `topic_imu`, `topic_camera0`, `topic_camera1` | Paths in the interface table | Sensor inputs. Defaults are derived from `UAV_NAME`. |
 
-The package includes scripts in the `scripts/` directory to facilitate visualization:
--   `refactor_rviz_config.sh`: Automatically updates RViz configuration files with the correct UAV namespace.
--   `refactor_plotjuggler_config.sh`: Automatically updates PlotJuggler layouts.
+If `namespace` differs from `UAV_NAME`, pass the input topic paths explicitly too.
 
-## Packages Included
+### Calibration profiles
 
-| Package | Description | Repository |
-| :--- | :--- | :--- |
-| `open_vins` | Contains the node that implements the OpenVINS algorithm. | [Link to repo](https://github.com/LASER-Robotics/open_vins) |
-| `laser_vins_republisher` | Contains the node that formats and republishes the raw odometry output from OpenVINS. | [Link to repo](https://github.com/LASER-Robotics/laser_vins_republisher) |
-| `laser_vins_imu_filter` | Contains the node that filters IMU data before it is fed into OpenVINS. | [Link to repo](https://github.com/LASER-Robotics/laser_vins_imu_filter) |
+The [params directory](ros_packages/laser_open_vins_core/params/) contains `rs_238222072435`, `rs_243522071667`, `rs_244622073910` and `bluefox_simulation`. Each profile has:
 
-## **TODOs**
+| File | Contents |
+| --- | --- |
+| `estimator_config.yaml` | Filter, initialization and visual-tracker settings. |
+| `kalibr_imucam_chain.yaml` | Camera intrinsics, distortion, camera/IMU extrinsics and timing. |
+| `kalibr_imu_chain.yaml` | IMU noise and calibration settings. |
 
-  * [ ] Create a code to align the ground truth odometry with the OpenVINS odometry
+Use the profile calibrated for your sensor, mounting and image resolution. The estimator configuration uses OpenCV YAML syntax, including its `%YAML:1.0` header.
+
+| Estimator parameter group | Meaning |
+| --- | --- |
+| `use_stereo`, `max_cameras` | Camera count and whether to use stereo constraints. |
+| `use_fej`, `integration` | First-estimate Jacobians and state integration method. |
+| `calib_cam_*`, `calib_imu_*` | Online calibration options for camera and IMU parameters. |
+| `max_clones`, `max_slam`, `max_slam_in_update`, `max_msckf_in_update` | Sliding-window size and feature/update limits. |
+| `init_*` | Static or dynamic initialization settings. |
+| `try_zupt`, `zupt_*` | Zero-velocity detection and update settings. |
+| `use_klt`, `num_pts`, `fast_threshold`, `grid_x`, `grid_y`, `min_px_dist` | Feature tracking method and distribution. |
+| `track_frequency`, `downsample_cameras`, `num_opencv_threads`, `histogram_method` | Tracking rate, image processing and CPU settings. |
+| `up_*` | Feature measurement noise and update thresholds. |
+| `gravity_mag` | Gravity magnitude in m/s². |
+| `relative_config_imu`, `relative_config_imucam` | Calibration files relative to the estimator profile. |
+| `record_timing_*`, `save_total_state`, `filepath_*` | Timing and state output files. |
+
+## Visualization
+
+`rviz.launch.py` and `plotjuggler.launch.py` use the supplied layouts and namespace-adjustment scripts. The `tmux/bluefox_simulation/` session starts the VIO simulation and the LUS stack with its own sensor and manager settings.
+
+For the algorithm, evaluation tools and citation, see the [OpenVINS README](ros_packages/open_vins/ReadMe.md).
